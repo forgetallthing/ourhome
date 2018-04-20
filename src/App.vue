@@ -1,8 +1,24 @@
 <template>
 	<div id="app">
+		<!--<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+				<el-menu-item v-for="item in navTitle" v-if="item.items==null">{{item.content}}</el-menu-item>
+				<el-submenu v-for="item in navTitle" v-if="item.items!=null">
+					<template slot="title">{{item.content}}</template>
+					<el-menu-item v-for="nextItem in item.items" :index="item.id-nextItem.id">{{nextItem.iname}}</el-menu-item>
+					<el-menu-item index="2-2">选项2</el-menu-item>
+					<el-menu-item index="2-3">选项3</el-menu-item>
+					<el-submenu index="2-4">
+						<template slot="title">选项4</template>
+						<el-menu-item index="2-4-1">选项1</el-menu-item>
+						<el-menu-item index="2-4-2">选项2</el-menu-item>
+						<el-menu-item index="2-4-3">选项3</el-menu-item>
+					</el-submenu>
+				</el-submenu>
+				
+		</el-menu>-->
 		<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
 			<el-menu-item index="1">处理中心</el-menu-item>
-			<!--<el-submenu index="2">
+			<el-submenu index="2">
 				<template slot="title">我的工作台</template>
 				<el-menu-item index="2-1">选项1</el-menu-item>
 				<el-menu-item index="2-2">选项2</el-menu-item>
@@ -14,8 +30,8 @@
 					<el-menu-item index="2-4-3">选项3</el-menu-item>
 				</el-submenu>
 			</el-submenu>
-			<el-menu-item index="3">消息中心</el-menu-item>
-			<el-menu-item index="4">订单管理</el-menu-item>-->
+			<el-menu-item index="3" disabled>消息中心</el-menu-item>
+			<el-menu-item index="4">订单管理</el-menu-item>
 		</el-menu>
 	</div>
 </template>
@@ -29,7 +45,7 @@
 					id: 1,
 					content: "首页",
 					items: []
-				},{
+				}, {
 					id: 2,
 					content: "产品服务",
 					items: [{
@@ -49,7 +65,7 @@
 						iname: "解决方案1",
 						link: ""
 					}]
-				},{
+				}, {
 					id: 4,
 					content: "合作伙伴",
 					items: [{
