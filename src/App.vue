@@ -1,29 +1,15 @@
 <template>
 	<div id="app">
-		<!--<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
-				<el-menu-item v-for="item in navTitle" v-if="item.items==null">{{item.content}}</el-menu-item>
-				<el-submenu v-for="item in navTitle" v-if="item.items!=null">
-					<template slot="title">{{item.content}}</template>
-					<el-menu-item v-for="nextItem in item.items" :index="item.id-nextItem.id">{{nextItem.iname}}</el-menu-item>
-					<el-menu-item index="2-2">选项2</el-menu-item>
-					<el-menu-item index="2-3">选项3</el-menu-item>
-					<el-submenu index="2-4">
-						<template slot="title">选项4</template>
-						<el-menu-item index="2-4-1">选项1</el-menu-item>
-						<el-menu-item index="2-4-2">选项2</el-menu-item>
-						<el-menu-item index="2-4-3">选项3</el-menu-item>
-					</el-submenu>
-				</el-submenu>
-				
-		</el-menu>-->
-		<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
-			<el-menu-item v-if="!item.items || item.items.length===0" v-for="item in navTitle" :index="item.id">{{item.content}}</el-menu-item>
-	        <el-submenu v-else :index="item.id">
+		<el-menu style='height: 70px;font-size: 40px;' :default-active="activeIndex" router class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="rgb(22, 21, 27)" text-color="#8890a4" active-text-color="#ffffff">
+			<el-menu-item index='/' style='position: absolute;left: 9vw;color: #fff;'><div class='logo'>logo</div></el-menu-item>
+			<el-menu-item style='margin-left: 35%;' v-if="!item.items || item.items.length===0" v-for="item in navTitle" :key='item.id' :index="'/'+item.name">{{item.content}}</el-menu-item> 
+	        <el-submenu v-else :index="'/'+item.name">
 	        <template slot="title">{{item.content}}</template>
 		        <my-component :message="item.items"></my-component>
 	        </el-submenu>
-		</el-menu>
-		 
+	        </router-link>
+		</el-menu>	
+		<router-view></router-view>
 	</div>
 </template>
 
@@ -32,8 +18,8 @@ import Vue from "vue";
 
 Vue.component("my-component", {
   props: ["message"],
-  template: `<a><el-menu-item v-if="!item.items || item.items.length===0" v-for="item in message" :index="item.id">{{item.content}}</el-menu-item>
-			          <el-submenu v-else :index="item.id">
+  template: `<a><el-menu-item v-if="!item.items || item.items.length===0" v-for="item in message" :key='item.id' :index="'/'+item.name">{{item.content}}</el-menu-item>
+			          <el-submenu v-else :index="'/'+item.name">
                 <template slot="title">{{item.content}}</template>
                 <my-component :message="item.items"></my-component>
         </el-submenu></a>`
@@ -42,42 +28,50 @@ Vue.component("my-component", {
 export default {
   data() {
     return {
-      activeIndex: "1",
+      activeIndex: "/home",
       navTitle: [
         {
           id: "1",
           content: "首页",
+          name:"home",
           items: []
         },
         {
           id: "2",
           content: "产品服务",
+           name:"product2",
           items: [
             {
               id: "2-1",
               content: "产品服务1",
+              name:"product21",
               link: ""
             },
             {
               id: "2-2",
               content: "产品服务2",
+               name:"product22",
               items: [
                 {
                   id: "2-2-1",
                   content: "首页111",
+                  name:"product221",
                   items: []
                 },
                 {
                   id: "2-2-2",
                   content: "首页222",
+                  name:"product222",
                   items: [
                     {
                       id: "2-2-2-1",
                       content: "首页ee",
+                      name:"product2221",
                       items: [
                         {
                           id: "2-2-2-12",
                           content: "首页ee1",
+                          name:"product22212",
                           items: []
                         }
                       ]
@@ -91,10 +85,12 @@ export default {
         {
           id: "3",
           content: "解决方案",
+          name:"resolve",
           items: [
             {
               id: "3-1",
               content: "解决方案1",
+              name:"resolve1",
               link: ""
             }
           ]
@@ -102,10 +98,12 @@ export default {
         {
           id: "4",
           content: "合作伙伴",
+          name:"partner",
           items: [
             {
               id: "4-1",
               content: "合作伙伴1",
+              name:"partner1",
               link: ""
             }
           ]
@@ -116,9 +114,18 @@ export default {
   components: {},
   methods: {
     handleSelect(key, keyPath) {
-      console.log(key, keyPath);
+    
+      console.log(this.$route.query);
     }
-  }
+  },
+  watch: {
+            $route (to,from){
+                // to表示的是你要去的那个组件，from 表示的是你从哪个组件过来的，它们是两个对象，你可以把它打印出来，它们也有一个param 属性
+                console.log(to);
+                console.log(from);
+              
+            }
+        }
 };
 </script>
 
@@ -130,5 +137,47 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 0px;
+}
+/*.el-menu {
+    padding-left: 35%;
+}*/
+.logo{
+	font-size: 26px;
+	font-style: italic;
+}
+.el-menu--horizontal>.el-submenu:focus .el-submenu__title, .el-menu--horizontal>.el-submenu:hover .el-submenu__title {
+    color: #fff !important;
+    background-color: rgb(22,21,47) !important;
+}
+.el-menu-item.is-active {
+    background-color: RGB(22,21,47) !important;
+   
+}
+.el-menu--horizontal {
+    border-bottom: solid 0px #e6e6e6;
+}
+.el-menu--horizontal .el-menu-item:not(.is-disabled):focus, .el-menu--horizontal .el-menu-item:not(.is-disabled):hover {
+    background-color:RGB(22,21,47) !important;
+    color: #fff !important;
+}
+.el-submenu__title:focus, .el-submenu__title:hover {
+    outline: 0;
+    background-color: RGB(22,21,47) !important;
+    color: #fff !important;
+    /*color: #34d7c4 !important;*/
+}
+.el-submenu__title {
+    font-size: 18px;
+}
+.el-menu--horizontal>.el-menu-item {
+    height: 70px;
+    line-height: 70px;
+}
+.el-menu-item {
+    font-size: 18px;
+}
+.el-menu--horizontal>.el-submenu .el-submenu__title {
+    height: 70px;
+    line-height: 70px;
 }
 </style>
