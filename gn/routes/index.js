@@ -7,8 +7,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/check', function(req, res, next) {
-  console.log(req)
-  res.send(req.echostr)
+  console.log(req.query.echostr)
+  res.send(req.query.echostr)
 });
 
 module.exports = router;
