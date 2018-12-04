@@ -32,26 +32,36 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
-schedule.scheduleJob('30 * * * * *', function () {
+
+schedule.scheduleJob('*/1 * * *', function () {
   console.log('scheduleCronstyle:' + new Date());
+  get_access_token()
+});
+
+function get_access_token() {
   const access_token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx986fbde73494c321&secret=51dd60cf87edc438b11e240cb88070d9";
   https.get(access_token_url, function (res) {
-    var datas = [];
-    var size = 0;
+    let datas = [];
+    let size = 0;
     res.on('data', function (data) {
       datas.push(data);
       size += data.length;
-      //process.stdout.write(data);  
     });
     res.on("end", function () {
-      var buff = Buffer.concat(datas, size);
-      var result = buff.toString(); 
-      console.log(result);
+      let buff = Buffer.concat(datas, size);
+      let result = JSON.parse(buff.toString());
+      if(result.access_token){
+        global.access_token = result.access_token;
+      }
+      console.log(global.access_token);
     });
   }).on("error", function (err) {
     console.log(err)
   });
-});
+}
+
+get_access_token()
+
 
 // error handler
 app.use(function (err, req, res, next) {
