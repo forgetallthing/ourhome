@@ -17,7 +17,7 @@
         var REDIRECT_URI = "http://ipromiseyourlife.com/wechat.html";
         var SCOPE = "snsapi_userinfo";
         var STATE = ""; //重定向后会带上state参数，开发者可以填写a-zA-Z0-9的参数值，最多128字节
-        var href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + APPID + "&redirect_uri=" + encodeURIComponent(REDIRECT_URI) + "&response_type=code&scope=" + SCOPE + "&state=" + STATE + "#wechat_redirect"
+        var href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + APPID + "&redirect_uri=" + encodeURI(REDIRECT_URI) + "&response_type=code&scope=" + SCOPE + "&state=" + STATE + "#wechat_redirect"
         document.getElementById("submit_b").addEventListener("click", function () {
             console.log(href)
             window.location.href = href;
