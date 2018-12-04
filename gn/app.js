@@ -32,7 +32,7 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
-
+//每小时一次获取access_token
 schedule.scheduleJob('0 0 * * * *', function () {
   console.log('scheduleCronstyle:' + new Date());
   get_access_token()
