@@ -12,13 +12,12 @@
     填写问卷:
     <input type="text">
     <input id="submit_b" type="button" value="提交">
-    <script src="">
+    <script>
         var APPID = "wx986fbde73494c321";
         var REDIRECT_URI = "http://ipromiseyourlife.com/wechat.html";
         var SCOPE = "snsapi_userinfo";
         var STATE = ""; //重定向后会带上state参数，开发者可以填写a-zA-Z0-9的参数值，最多128字节
         var href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + APPID + "&redirect_uri=" + REDIRECT_URI + "&response_type=code&scope=" + SCOPE + "&state=" + STATE + "#wechat_redirect"
-
         document.getElementById("submit_b").addEventListener("click", function () {
             console.log(href)
             window.location.href = href;
