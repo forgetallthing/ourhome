@@ -33,7 +33,7 @@ app.use(function (req, res, next) {
 });
 
 
-schedule.scheduleJob('*/1 * * *', function () {
+schedule.scheduleJob('0 0 * * * *', function () {
   console.log('scheduleCronstyle:' + new Date());
   get_access_token()
 });
