@@ -6,7 +6,7 @@ function getWechatCollection() {
 
 
 function setWechatUserInfo(data, callback) {
-    getWechatCollection().insertOne(data, callback);
+    getWechatCollection().update({ 'openid': data, openid }, { $set: data }, { upsert: true }, callback);
 }
 
 module.exports = {
