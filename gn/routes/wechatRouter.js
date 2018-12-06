@@ -31,7 +31,6 @@ router.get('/setUserInfo', function (req, resp, next) {
       res.on("end", function () {
         let buff = Buffer.concat(datas, size);
         let result = JSON.parse(buff.toString());
-        console.log(result);
         if (result.access_token && result.scope == "snsapi_userinfo") {
           //获取用户信息
           let openId = result.openid;
@@ -48,12 +47,11 @@ router.get('/setUserInfo', function (req, resp, next) {
             res.on("end", function () {
               let buff = Buffer.concat(datas, size);
               let result = JSON.parse(buff.toString());
-              console.log(result);
               if (!result.errcode) {
                 result.access_token = access_token;
                 result.refresh_token = refresh_token;
                 wechatDao.setWechatUserInfo(result, function () {
-                  resp.send({ state: 1, res: "yes" });
+                  resp.send({ state: 1, value:result});
                 })
               } else {
                 resp.send({ state: 0, err: result });
