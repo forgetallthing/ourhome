@@ -53,7 +53,7 @@ app.use(express.static(path.join(__dirname, 'views')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/wechatRo', wechatRouter);
+app.use('/wechat', wechatRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
