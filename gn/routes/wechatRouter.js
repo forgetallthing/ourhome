@@ -51,7 +51,7 @@ router.get('/setUserInfo', function (req, resp, next) {
                 result.access_token = access_token;
                 result.refresh_token = refresh_token;
                 wechatDao.setWechatUserInfo(result, function () {
-                  resp.send({ state: 1, value:result});
+                  resp.send({ state: 1, value: result });
                 })
               } else {
                 resp.send({ state: 0, err: result });
