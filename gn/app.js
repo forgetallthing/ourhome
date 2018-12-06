@@ -6,11 +6,31 @@ var logger = require('morgan');
 var ejs = require('ejs');
 var schedule = require("node-schedule");
 var https = require("https");
+var Config = require("./common/config.js")
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var wechatRouter = require('./routes/wechatRouter');
 
 var app = express();
+
+const MongoClient = require("mongodb").MongoClient;
+MongoClient.connect(Config.sys_mongo + "/" + Config.mongo_db, { useNewUrlParser: true, autoReconnect: true, connectTimeoutMS: 3600000, socketTimeoutMS: 3600000, wtimeout: 0 }, function (err, database) {
+  if (err) throw err;
+  global.mongodb = database;
+  const ObjectID = require("mongodb").ObjectID;
+
+  global.toObjectID = function (id) {
+    if (typeof (id) == "string") {
+      return ObjectID(id);
+    }
+    return id;
+  }
+});
+MongoClient.connect(Config.sys_mongo + "/" + Config.log_db, { useNewUrlParser: true, connectTimeoutMS: 3600000, socketTimeoutMS: 3600000, wtimeout: 0 }, function (err, database) {
+  if (err) throw err;
+  global.logdb = database;
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,6 +46,7 @@ app.use(express.static(path.join(__dirname, 'views')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/wechat', wechatRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -50,7 +71,7 @@ function get_access_token() {
     res.on("end", function () {
       let buff = Buffer.concat(datas, size);
       let result = JSON.parse(buff.toString());
-      if(result.access_token){
+      if (result.access_token) {
         global.access_token = result.access_token;
       }
       console.log(global.access_token);
