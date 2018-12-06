@@ -28,10 +28,10 @@
             url: "/wechat/setUserInfo",
             async: true,
             data: {
-                code: "1233"
+                code: code
             },
             success: function (data) {
-                alert(data)
+                alert(JSON.stringify(data))
             },
             error: function (e) {
                 // alert("服务器错误，请联系我们")

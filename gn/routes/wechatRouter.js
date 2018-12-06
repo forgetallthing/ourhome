@@ -17,7 +17,7 @@ router.get('/', function (req, res, next) {
   });
 });
 
-router.get('/setUserInfo', function (req, res, next) {
+router.get('/setUserInfo', function (req, resp, next) {
   co(function* () {
     let code = req.query.code;
     const access_token_url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + APPID + "&secret=" + SECRET + "&code=" + code + "&grant_type=authorization_code";
@@ -53,24 +53,24 @@ router.get('/setUserInfo', function (req, res, next) {
                 result.access_token = access_token;
                 result.refresh_token = refresh_token;
                 wechatDao.setWechatUserInfo(result, function () {
-                  res.send({ state: 1, res: "yes" });
+                  resp.send({ state: 1, res: "yes" });
                 })
               } else {
-                res.send({ state: 0, err: result });
+                resp.send({ state: 0, err: result });
               }
             });
           }).on("error", function (err) {
-            res.send({ state: 0, err: err });
+            resp.send({ state: 0, err: err });
           });
         } else {
-          res.send({ state: 0, err: result });
+          resp.send({ state: 0, err: result });
         }
       });
     }).on("error", function (err) {
-      res.send({ state: 0, err: err });
+      resp.send({ state: 0, err: err });
     });
   }).catch(function (e) {
-    res.send({ state: 0, err: e });
+    resp.send({ state: 0, err: e });
   });
 });
 
