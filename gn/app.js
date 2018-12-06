@@ -21,7 +21,7 @@ MongoClient.connect(mongoUrl, { authSource: "admin", useNewUrlParser: true, auto
   if (err) throw err;
   const db = client.db(Config.mongo_db);
   global.mongodb = db;
-  
+  console.log("mongodb链接成功")
   //添加全局toObjectID方法
   const ObjectID = require("mongodb").ObjectID;
   global.toObjectID = function (id) {
@@ -53,7 +53,7 @@ app.use(express.static(path.join(__dirname, 'views')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/wechat', wechatRouter);
+app.use('/wechatRo', wechatRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
