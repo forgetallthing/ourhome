@@ -6,14 +6,7 @@ function getWechatCollection() {
 
 
 function setWechatUserInfo(data, callback) {
-    getWechatCollection().insertOne({
-        imei: "1",
-        user_id: "2",
-        reg_time: "3",
-        model: "model",
-        telephone: "telephone",
-        area_code: "areaCode"
-    }, callback);
+    getWechatCollection().insertOne(data, callback);
 }
 
 module.exports = {
