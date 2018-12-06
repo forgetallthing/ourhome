@@ -15,11 +15,15 @@ var wechatRouter = require('./routes/wechatRouter');
 var app = express();
 
 const MongoClient = require("mongodb").MongoClient;
-MongoClient.connect(Config.sys_mongo + "/" + Config.mongo_db, { useNewUrlParser: true, autoReconnect: true, connectTimeoutMS: 3600000, socketTimeoutMS: 3600000, wtimeout: 0 }, function (err, database) {
-  if (err) throw err;
-  global.mongodb = database;
-  const ObjectID = require("mongodb").ObjectID;
+const mongoUrl = "mongodb://" + Config.DB_USER + ":" + Config.DB_PW + "@" + Config.sys_mongo;
 
+MongoClient.connect(mongoUrl, { authSource: "admin", useNewUrlParser: true, autoReconnect: true, connectTimeoutMS: 3600000, socketTimeoutMS: 3600000, wtimeout: 0 }, function (err, client) {
+  if (err) throw err;
+  const db = client.db(Config.mongo_db);
+  global.mongodb = db;
+  
+  //添加全局toObjectID方法
+  const ObjectID = require("mongodb").ObjectID;
   global.toObjectID = function (id) {
     if (typeof (id) == "string") {
       return ObjectID(id);
@@ -27,9 +31,12 @@ MongoClient.connect(Config.sys_mongo + "/" + Config.mongo_db, { useNewUrlParser:
     return id;
   }
 });
-MongoClient.connect(Config.sys_mongo + "/" + Config.log_db, { useNewUrlParser: true, connectTimeoutMS: 3600000, socketTimeoutMS: 3600000, wtimeout: 0 }, function (err, database) {
+
+//日志
+MongoClient.connect(mongoUrl, { authSource: "admin", useNewUrlParser: true, connectTimeoutMS: 3600000, socketTimeoutMS: 3600000, wtimeout: 0 }, function (err, client) {
   if (err) throw err;
-  global.logdb = database;
+  const db = client.db(Config.log_db);
+  global.logdb = db;
 });
 
 // view engine setup
