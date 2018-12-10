@@ -12,16 +12,36 @@
     填写问卷:
     <input type="text">
     <input id="submit_b" type="button" value="提交">
+    <input id="submit_c" type="button" value="付款">
+    <div id="qrcode"></div>
+    <script src="./qrcode.min.js"></script>
+    <script src="./jquery-2.1.0.js"></script>
     <script>
         var APPID = "wx986fbde73494c321";
         var REDIRECT_URI = "http://ipromiseyourlife.com/wechat/wechat.html";
         var SCOPE = "snsapi_userinfo";
-        console.log(encodeURI(REDIRECT_URI))
         var STATE = ""; //重定向后会带上state参数，开发者可以填写a-zA-Z0-9的参数值，最多128字节
         var href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + APPID + "&redirect_uri=" + encodeURIComponent(REDIRECT_URI) + "&response_type=code&scope=" + SCOPE + "&state=" + STATE + "#wechat_redirect"
         document.getElementById("submit_b").addEventListener("click", function () {
-            console.log(href)
             window.location.href = href;
+        })
+        var qrcode = new QRCode("qrcode");
+        document.getElementById("submit_c").addEventListener("click", function () {
+            $.ajax({
+                type: "get",
+                url: "/wechat/getPayLink",
+                async: true,
+                data: {
+                    moneySum: 1
+                },
+                success: function (data) {
+                    console.log(JSON.stringify(data))
+                    qrcode.makeCode(data.data.code_url);
+                },
+                error: function (e) {
+                    alert("服务器错误，请联系我们")
+                }
+            })
         }) 
     </script>
 </body>

@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const co = require("co");
 const https = require("https");
+const crypto = require("crypto");
+const querystring = require('querystring')
+const xml2js = require('xml2js')
 const wechatDao = require("../dao/wechatDao.js");
 const APPID = "wx986fbde73494c321";
 const SECRET = "51dd60cf87edc438b11e240cb88070d9";
@@ -71,5 +74,91 @@ router.get('/setUserInfo', function (req, resp, next) {
     resp.send({ state: 0, err: e });
   });
 });
+
+router.get('/getPayLink', function (req, resp, next) {
+  co(function* () {
+    const mch_id = "1518268001";
+    const key = "youxuanYOUXUAN946578385496877346";
+    let nonce_str = generateRandomAlphaNum(32);
+    const pay_body = "优炫充值中心-问卷红包充值";
+    const out_trade_no = new Date().getTime() + generateRandomAlphaNum(19);
+    let total_fee = req.query.moneySum;
+    const spbill_create_ip = "60.205.202.39";
+    const notify_url = "http://ipromiseyourlife.com/wechat/getPayCallback";
+    const trade_type = "NATIVE";
+    let stringA = "appid=" + APPID + "&body=" + pay_body + "&mch_id=" + mch_id + "&nonce_str=" + nonce_str + "&notify_url=" + notify_url + "&out_trade_no=" + out_trade_no + "&spbill_create_ip=" + spbill_create_ip + "&total_fee=" + total_fee + "&trade_type=" + trade_type;
+    let stringSignTemp = stringA + "&key=" + key;
+    let sign = crypto.createHash("md5").update(stringSignTemp).digest("hex");
+    let reqData = {
+      "appid": APPID,
+      "body": pay_body,
+      "mch_id": mch_id,
+      "nonce_str": nonce_str,
+      "notify_url": notify_url,
+      "out_trade_no": out_trade_no,
+      "spbill_create_ip": spbill_create_ip,
+      "total_fee": total_fee,
+      "trade_type": trade_type,
+      "sign": sign,
+    }
+    let builder = new xml2js.Builder({ headless: false, rootName: "xml" });
+    let xml = builder.buildObject(reqData);
+    let opts = {
+      method: 'POST',
+      host: 'api.mch.weixin.qq.com',
+      port: 443,
+      path: '/pay/unifiedorder',
+      headers: {
+        'Content-Type': 'text/xml',
+        'Content-Length': Buffer.byteLength(xml)
+      }
+    }
+    let post_req = https.request(opts, function (res) {
+      let datas = [];
+      let size = 0;
+      res.on('data', function (data) {
+        datas.push(data);
+        size += data.length;
+      })
+      res.on('end', function () {
+        let buff = Buffer.concat(datas, size);
+        let parser = new xml2js.Parser();
+        parser.parseString(buff.toString(), function (err, result) {
+          console.log(result);
+          if (result.xml.return_code[0] == "SUCCESS" && result.xml.return_msg[0] == "OK") {
+            resp.send({ state: 1, data: { code_url: result.xml.code_url[0] } });
+          } else {
+            resp.send({ state: 0, err: { err_code: result.xml.err_code, err_code_des: result.xml.err_code_des } });
+          }
+        });
+      })
+    })
+    post_req.on('error', function (err) {
+      console.log('异常,异常原因' + err);
+      resp.send({ state: 0, err: err });
+    })
+    post_req.write(xml);
+    post_req.end();
+  }).catch(function (e) {
+    resp.send({ state: 0, err: e });
+  });
+});
+
+router.get('/getPayCallback', function (req, resp, next) {
+  co(function* () {
+    console.log("-----------------")
+    console.log(req.query)
+    resp.send();
+  }).catch(function (e) {
+    resp.send({ state: 0, err: e });
+  });
+});
+
+function generateRandomAlphaNum(len) {
+  var rdmString = "";
+  for (; rdmString.length < len; rdmString += Math.random().toString(36).substr(2));
+  return rdmString.substr(0, len);
+}
+
 
 module.exports = router;
