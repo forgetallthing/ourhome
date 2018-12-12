@@ -12,7 +12,7 @@
     填写问卷:
     <input type="text">
     <input id="submit_b" type="button" value="提交">
-    <input id="submit_c" type="button" value="付款">
+    <input id="submit_c" type="button" value="<%=title%>">
     <div id="qrcode"></div>
     <script src="./qrcode.min.js"></script>
     <script src="./jquery-2.1.0.js"></script>
@@ -26,6 +26,9 @@
             window.location.href = href;
         })
         var qrcode = new QRCode("qrcode");
+        var x = "<%=title%>"
+        console.log("<%=title%>")
+        console.log(x)
         document.getElementById("submit_c").addEventListener("click", function () {
             $.ajax({
                 type: "get",
