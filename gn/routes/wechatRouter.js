@@ -151,10 +151,10 @@ router.get('/getPayLink', function (req, resp, next) {
   post_req.end();
 });
 
-router.get('/getPayCallback', function (req, resp, next) {
+router.post('/getPayCallback', function (req, resp, next) {
   co(function* () {
     console.log("---------------------------==================================")
-    console.log(req.query)
+    console.log(req.body)
     let parser = new xml2js.Parser();
     // parser.parseString(12, function (err, result) {
     //   console.log(result);
