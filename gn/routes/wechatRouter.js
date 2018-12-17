@@ -166,8 +166,7 @@ router.post('/getPayCallback', function (req, resp, next) {
     buf += chunk
   });
   req.on('end', function () {
-    let parser = new xml2js.Parser();
-    parser.parseString(buf, {
+    xml2js.parseString(buf, {
       explicitArray: false,
     }, function (err, result) {
       if (err) {
