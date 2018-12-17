@@ -164,7 +164,7 @@ router.post('/getPayCallback', function (req, resp, next) {
       let parser = new xml2js.Parser();
       parser.parseString(buf, function (err, result) {
         console.log(result);
-        if (!err) {
+        if (err) {
           console.error("error:"+ err)
           resp.send();
         } else {
