@@ -120,20 +120,26 @@ router.get('/getPayLink', function (req, resp, next) {
       datas.push(data);
       size += data.length;
     })
+    function nameToUpperCase(value, name) {
+      console.log(value, name)
+      return value;
+    }
     res.on('end', function () {
       let buff = Buffer.concat(datas, size);
-      let parser = new xml2js.Parser();
-      parser.parseString(buff.toString(), function (err, result) {
+      xml2js.parseString(buff.toString(), {
+        explicitArray: false,
+      }, function (err, result) {
         console.log(result);
-        if (result.xml.return_code[0] == "SUCCESS" && result.xml.return_msg[0] == "OK") {
+        if (result.xml.return_code == "SUCCESS" && result.xml.return_msg == "OK") {
           let obj = reqData;
           obj.userId = "userId";
           obj.state = "Unpaid";
-          obj.prepay_id = result.xml.prepay_id[0];
-          obj.code_url = result.xml.code_url[0];
+          obj.prepay_id = result.xml.prepay_id;
+          obj.code_url = result.xml.code_url;
+          obj.get_time = new Date().getTime();
           co(function* () {
             yield common.toPromise(wechatDao.setWechatPayInfo, obj);
-            resp.send({ state: 1, data: { code_url: result.xml.code_url[0] } });
+            resp.send({ state: 1, data: { code_url: result.xml.code_url } });
           }).catch(function (e) {
             resp.send({ state: 0, err: e });
           });
@@ -162,33 +168,33 @@ router.post('/getPayCallback', function (req, resp, next) {
     });
     req.on('end', function () {
       let parser = new xml2js.Parser();
-      parser.parseString(buf, function (err, result) {
-        console.log(result);
+      parser.parseString(buf, {
+        explicitArray: false,
+      }, function (err, result) {
         if (err) {
-          console.error("error:"+ err)
+          console.error("error:" + err)
           resp.send();
         } else {
-          if (result.xml.return_code[0] == "SUCCESS") {
+          if (result.xml.return_code == "SUCCESS") {
+            let data = {
+              out_trade_no:result.xml.out_trade_no,
+              time_end:result.xml.time_end,
+              bank_type:result.xml.bank_type,
+              cash_fee:result.xml.cash_fee,
+              is_subscribe:result.xml.is_subscribe,
+              openid:result.xml.openid,
+              transaction_id:result.xml.transaction_id,
+            }
+            console.log(data);
+            yield common.toPromise(wechatDao.setWechatPayState, data);
             let reqData = {
               "return_code": "SUCCESS",
               "return_msg": "OK",
             }
             let builder = new xml2js.Builder({ headless: false, rootName: "xml" });
             let xml = builder.buildObject(reqData);
-            console.log(xml)
             resp.set('Content-Type', 'text/xml');
             resp.send(xml);
-            // let obj = reqData;
-            // obj.userId = "userId";
-            // obj.state = "Unpaid";
-            // obj.prepay_id = result.xml.prepay_id[0];
-            // obj.code_url = result.xml.code_url[0];
-            // co(function* () {
-            //   yield common.toPromise(wechatDao.setWechatPayInfo, obj);
-            //   resp.send({ state: 1, data: { code_url: result.xml.code_url[0] } });
-            // }).catch(function (e) {
-            //   resp.send({ state: 0, err: e });
-            // });
           } else {
             console.log(result.xml.err_code, result.xml.err_code_des)
             resp.send();

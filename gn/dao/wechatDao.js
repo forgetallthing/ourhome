@@ -16,7 +16,12 @@ function setWechatPayInfo(data, callback) {
     getWechatPayCollection().updateOne({ 'out_trade_no': data.out_trade_no }, { $set: data }, { upsert: true }, callback);
 }
 
+function setWechatPayState(data, callback) {
+    getWechatPayCollection().updateOne({ 'out_trade_no': data.out_trade_no }, { $set: data }, { upsert: false }, callback);
+}
+
 module.exports = {
     setWechatUserInfo,
     setWechatPayInfo,
+    setWechatPayState,
 };
