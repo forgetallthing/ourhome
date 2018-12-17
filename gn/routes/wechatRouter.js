@@ -3,7 +3,7 @@ const router = express.Router();
 const co = require("co");
 const https = require("https");
 const crypto = require("crypto");
-const querystring = require('querystring')
+
 const xml2js = require('xml2js')
 const common = require('../common/common.js')
 const wechatDao = require("../dao/wechatDao.js");
@@ -154,7 +154,7 @@ router.get('/getPayLink', function (req, resp, next) {
 router.post('/getPayCallback', function (req, resp, next) {
   co(function* () {
     console.log("---------------------------==================================")
-    console.log(req)
+    //解析xml
     var buf = '';
     req.setEncoding('utf8');
     req.on('data', function (chunk) {
@@ -163,27 +163,38 @@ router.post('/getPayCallback', function (req, resp, next) {
     req.on('end', function () {
       let parser = new xml2js.Parser();
       parser.parseString(buf, function (err, result) {
-        console.log(err);
         console.log(result);
-        // if (result.xml.return_code[0] == "SUCCESS" && result.xml.return_msg[0] == "OK") {
-        //   let obj = reqData;
-        //   obj.userId = "userId";
-        //   obj.state = "Unpaid";
-        //   obj.prepay_id = result.xml.prepay_id[0];
-        //   obj.code_url = result.xml.code_url[0];
-        //   co(function* () {
-        //     yield common.toPromise(wechatDao.setWechatPayInfo, obj);
-        //     resp.send({ state: 1, data: { code_url: result.xml.code_url[0] } });
-        //   }).catch(function (e) {
-        //     resp.send({ state: 0, err: e });
-        //   });
-        // } else {
-        //   resp.send({ state: 0, err: { err_code: result.xml.err_code, err_code_des: result.xml.err_code_des } });
-        // }
+        if (!err) {
+          console.log(err)
+          resp.send();
+        } else {
+          if (result.xml.return_code[0] == "SUCCESS") {
+            let reqData = {
+              "return_code": "SUCCESS",
+              "return_msg": "OK",
+            }
+            let builder = new xml2js.Builder({ headless: false, rootName: "xml" });
+            let xml = builder.buildObject(reqData);
+            resp.set('Content-Type', 'text/xml');
+            resp.send(xml);
+            // let obj = reqData;
+            // obj.userId = "userId";
+            // obj.state = "Unpaid";
+            // obj.prepay_id = result.xml.prepay_id[0];
+            // obj.code_url = result.xml.code_url[0];
+            // co(function* () {
+            //   yield common.toPromise(wechatDao.setWechatPayInfo, obj);
+            //   resp.send({ state: 1, data: { code_url: result.xml.code_url[0] } });
+            // }).catch(function (e) {
+            //   resp.send({ state: 0, err: e });
+            // });
+          } else {
+            console.log(result.xml.err_code, result.xml.err_code_des)
+            resp.send();
+          }
+        }
       });
     });
-
-    resp.send();
   }).catch(function (e) {
     resp.send({ state: 0, err: e });
   });
