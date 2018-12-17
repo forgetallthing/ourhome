@@ -158,34 +158,34 @@ router.get('/getPayLink', function (req, resp, next) {
 });
 
 router.post('/getPayCallback', function (req, resp, next) {
-  co(function* () {
-    console.log("---------------------------==================================")
-    //解析xml
-    var buf = '';
-    req.setEncoding('utf8');
-    req.on('data', function (chunk) {
-      buf += chunk
-    });
-    req.on('end', function () {
-      let parser = new xml2js.Parser();
-      parser.parseString(buf, {
-        explicitArray: false,
-      }, function (err, result) {
-        if (err) {
-          console.error("error:" + err)
-          resp.send();
-        } else {
-          if (result.xml.return_code == "SUCCESS") {
-            let data = {
-              out_trade_no:result.xml.out_trade_no,
-              time_end:result.xml.time_end,
-              bank_type:result.xml.bank_type,
-              cash_fee:result.xml.cash_fee,
-              is_subscribe:result.xml.is_subscribe,
-              openid:result.xml.openid,
-              transaction_id:result.xml.transaction_id,
-            }
-            console.log(data);
+  console.log("---------------------------==================================")
+  //解析xml
+  var buf = '';
+  req.setEncoding('utf8');
+  req.on('data', function (chunk) {
+    buf += chunk
+  });
+  req.on('end', function () {
+    let parser = new xml2js.Parser();
+    parser.parseString(buf, {
+      explicitArray: false,
+    }, function (err, result) {
+      if (err) {
+        console.error("error:" + err)
+        resp.send();
+      } else {
+        if (result.xml.return_code == "SUCCESS") {
+          let data = {
+            out_trade_no: result.xml.out_trade_no,
+            time_end: result.xml.time_end,
+            bank_type: result.xml.bank_type,
+            cash_fee: result.xml.cash_fee,
+            is_subscribe: result.xml.is_subscribe,
+            openid: result.xml.openid,
+            transaction_id: result.xml.transaction_id,
+          }
+          console.log(data);
+          co(function* () {
             yield common.toPromise(wechatDao.setWechatPayState, data);
             let reqData = {
               "return_code": "SUCCESS",
@@ -195,15 +195,15 @@ router.post('/getPayCallback', function (req, resp, next) {
             let xml = builder.buildObject(reqData);
             resp.set('Content-Type', 'text/xml');
             resp.send(xml);
-          } else {
-            console.log(result.xml.err_code, result.xml.err_code_des)
-            resp.send();
-          }
+          }).catch(function (e) {
+            resp.send({ state: 0, err: e });
+          });
+        } else {
+          console.log(result.xml.err_code, result.xml.err_code_des)
+          resp.send();
         }
-      });
+      }
     });
-  }).catch(function (e) {
-    resp.send({ state: 0, err: e });
   });
 });
 
