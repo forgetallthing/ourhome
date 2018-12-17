@@ -155,6 +155,25 @@ router.get('/getPayCallback', function (req, resp, next) {
   co(function* () {
     console.log("---------------------------==================================")
     console.log(req.query)
+    let parser = new xml2js.Parser();
+    // parser.parseString(12, function (err, result) {
+    //   console.log(result);
+    //   if (result.xml.return_code[0] == "SUCCESS" && result.xml.return_msg[0] == "OK") {
+    //     let obj = reqData;
+    //     obj.userId = "userId";
+    //     obj.state = "Unpaid";
+    //     obj.prepay_id = result.xml.prepay_id[0];
+    //     obj.code_url = result.xml.code_url[0];
+    //     co(function* () {
+    //       yield common.toPromise(wechatDao.setWechatPayInfo, obj);
+    //       resp.send({ state: 1, data: { code_url: result.xml.code_url[0] } });
+    //     }).catch(function (e) {
+    //       resp.send({ state: 0, err: e });
+    //     });
+    //   } else {
+    //     resp.send({ state: 0, err: { err_code: result.xml.err_code, err_code_des: result.xml.err_code_des } });
+    //   }
+    // });
     resp.send();
   }).catch(function (e) {
     resp.send({ state: 0, err: e });
