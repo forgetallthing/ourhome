@@ -175,6 +175,7 @@ router.post('/getPayCallback', function (req, resp, next) {
             }
             let builder = new xml2js.Builder({ headless: false, rootName: "xml" });
             let xml = builder.buildObject(reqData);
+            console.log(xml)
             resp.set('Content-Type', 'text/xml');
             resp.send(xml);
             // let obj = reqData;
