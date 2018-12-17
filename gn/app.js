@@ -21,7 +21,7 @@ MongoClient.connect(mongoUrl, { authSource: "admin", useNewUrlParser: true, auto
   if (err) throw err;
   const db = client.db(Config.mongo_db);
   global.mongodb = db;
-  console.log("mongodb链接成功")
+  console.log("mongodb连接成功")
   //添加全局toObjectID方法
   const ObjectID = require("mongodb").ObjectID;
   global.toObjectID = function (id) {
