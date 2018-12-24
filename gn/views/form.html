@@ -13,6 +13,8 @@
     <input type="text">
     <input id="submit_b" type="button" value="提交">
     <input id="submit_c" type="button" value="<%=title%>">
+    <input id="submit_d" type="button" value="发红包">
+    <input id="submit_e" type="button" value="获取红包发放状态">
     <div id="qrcode"></div>
     <script src="./qrcode.min.js"></script>
     <script src="./jquery-2.1.0.js"></script>
@@ -35,11 +37,41 @@
                 url: "/wechat/getPayLink",
                 async: true,
                 data: {
-                    moneySum: 1
+                    moneySum: 100
                 },
                 success: function (data) {
                     console.log(JSON.stringify(data))
                     qrcode.makeCode(data.data.code_url);
+                },
+                error: function (e) {
+                    alert("服务器错误，请联系我们")
+                }
+            })
+        })
+        document.getElementById("submit_d").addEventListener("click", function () {
+            $.ajax({
+                type: "get",
+                url: "/wechat/sendRedBag",
+                async: true,
+                data: {
+                },
+                success: function (data) {
+                    console.log(JSON.stringify(data))
+                },
+                error: function (e) {
+                    alert("服务器错误，请联系我们")
+                }
+            })
+        })
+        document.getElementById("submit_e").addEventListener("click", function () {
+            $.ajax({
+                type: "get",
+                url: "/wechat/getSendRedBagState",
+                async: true,
+                data: {
+                },
+                success: function (data) {
+                    console.log(JSON.stringify(data))
                 },
                 error: function (e) {
                     alert("服务器错误，请联系我们")
