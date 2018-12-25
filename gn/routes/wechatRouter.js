@@ -343,7 +343,7 @@ router.get('/getSendRedBagState', function (req, resp, next) {
     })
   })
   post_req.on('error', function (err) {
-    console.log('异常,异常原因' + err);
+    console.log('异常,异常原因:' + err);
     resp.send({ state: 0, err: err });
   })
   post_req.write(xml);
