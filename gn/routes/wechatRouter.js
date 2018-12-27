@@ -23,6 +23,38 @@ router.get('/', function (req, res, next) {
   });
 });
 
+router.get('/luosimao', function (req, res, next) {
+  let opts = {
+    method: 'POST',
+    host: 'aptcha.luosimao.com',
+    port: 443,
+    path: '/api/site_verify',
+  }
+  let data = {
+    api_key: "1eabea87968096df3e9b8162f4d8a573",
+    response: req.query.response,
+  }
+  console.log(data)
+  let post_req = https.request(opts, function (res) {
+    let datas = [];
+    let size = 0;
+    res.on('data', function (data) {
+      datas.push(data);
+      size += data.length;
+    })
+    res.on('end', function () {
+      let buff = Buffer.concat(datas, size);
+      console.log(buff.toString())
+    })
+  })
+  post_req.on('error', function (err) {
+    console.log('异常,异常原因' + err);
+    resp.send({ state: 0, err: err });
+  })
+  post_req.write(data);
+  post_req.end();
+});
+
 router.get('/setUserInfo', function (req, resp, next) {
   co(function* () {
     let code = req.query.code;
@@ -335,7 +367,7 @@ router.get('/getSendRedBagState', function (req, resp, next) {
           // }).catch(function (e) {
           //   resp.send({ state: 0, err: e });
           // });
-          resp.send({ state: 0,status:result.xml.status})
+          resp.send({ state: 0, status: result.xml.status })
         } else {
           resp.send({ state: 0, err: { err_code: result.xml.err_code, err_code_des: result.xml.err_code_des } });
         }

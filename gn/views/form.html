@@ -22,8 +22,20 @@
     <script src="//captcha.luosimao.com/static/js/api.js"></script>
     <script>
         function getResponse(response){
-            console.log(111111)
-            console.log(response)
+            $.ajax({
+                type: "get",
+                url: "/wechat/luosimao",
+                async: true,
+                data: {
+                    response: response
+                },
+                success: function (data) {
+                    console.log(JSON.stringify(data))
+                },
+                error: function (e) {
+                    alert("服务器错误，请联系我们")
+                }
+            })
             return false;
         }
         var APPID = "wx986fbde73494c321";
