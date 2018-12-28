@@ -23,38 +23,42 @@ router.get('/', function (req, res, next) {
     res.send("no")
   });
 });
-
-router.get('/luosimao', function (req, res, next) {
-  let opts = {
-    method: 'POST',
-    host: 'aptcha.luosimao.com',
+o1()
+function o1(){
+  var img = fs.readFileSync("./gn/views/img/1.jpg").toString("base64");
+  var postData = querystring.stringify({
+    "image": img,
+  });
+  let token = "24.22d73a3340e3f0827f29410802725c99.2592000.1548572631.282335-11119121";
+  var options = {
+    hostname: 'aip.baidubce.com',
     port: 443,
-    path: '/api/site_verify',
+    path: '/rest/2.0/ocr/v1/general?access_token=' + token,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(postData)
+    }
   }
-  let data = querystring.stringify({
-    api_key: "1eabea87968096df3e9b8162f4d8a573",
-    response: req.query.response,
-  })
-  console.log(data)
-  let post_req = https.request(opts, function (res) {
+  var r = https.request(options, (res) => {
     let datas = [];
     let size = 0;
     res.on('data', function (data) {
       datas.push(data);
       size += data.length;
-    })
-    res.on('end', function () {
+    });
+    res.on("end", function () {
       let buff = Buffer.concat(datas, size);
-      console.log(buff.toString())
-    })
-  })
-  post_req.on('error', function (err) {
-    console.log('异常,异常原因' + err);
-    resp.send({ state: 0, err: err });
-  })
-  post_req.write(data);
-  post_req.end();
-});
+      let result = JSON.parse(buff.toString());
+      console.log(result)
+    });
+  });
+  r.on('error', (e) => {
+    console.log(e)
+  });
+  r.write(postData);
+  r.end();
+}
 
 router.get('/setUserInfo', function (req, resp, next) {
   co(function* () {
