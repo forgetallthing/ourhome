@@ -4,6 +4,7 @@ const co = require("co");
 const https = require("https");
 const crypto = require("crypto");
 const fs = require('fs');
+const querystring = require('querystring')
 
 const xml2js = require('xml2js')
 const common = require('../common/common.js')
@@ -30,10 +31,10 @@ router.get('/luosimao', function (req, res, next) {
     port: 443,
     path: '/api/site_verify',
   }
-  let data = {
+  let data = querystring.stringify({
     api_key: "1eabea87968096df3e9b8162f4d8a573",
     response: req.query.response,
-  }
+  })
   console.log(data)
   let post_req = https.request(opts, function (res) {
     let datas = [];
