@@ -5,6 +5,7 @@ const https = require("https");
 const crypto = require("crypto");
 const fs = require('fs');
 const querystring = require('querystring')
+const XlsxPopulate = require('xlsx-populate');
 
 const xml2js = require('xml2js')
 const common = require('../common/common.js')
@@ -23,8 +24,25 @@ router.get('/', function (req, res, next) {
     res.send("no")
   });
 });
-o1()
-function o1(){
+
+function o2() {
+  XlsxPopulate.fromBlankAsync()
+    .then(workbook => {
+      // Modify the workbook.
+      workbook.sheet("Sheet1").column("A").width(100)
+      workbook.sheet("Sheet1").row(1).height(100)
+      workbook.sheet("Sheet1").cell("A1").value("AAAAAA\nBBBBBB\nCCCCCC\nDDDDDD")
+      .style("verticalAlignment", "center")
+      .style("horizontalAlignment", "center")
+      .style("wrapText", true)
+
+      // Write to file.
+      return workbook.toFileAsync("./gn/xlsx.xlsx");
+    });
+}
+
+
+function o1() {
   var img = fs.readFileSync("./gn/views/img/1.jpg").toString("base64");
   var postData = querystring.stringify({
     "image": img,
