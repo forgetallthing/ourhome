@@ -10,9 +10,9 @@ const XlsxPopulate = require('xlsx-populate');
 const xml2js = require('xml2js')
 const common = require('../common/common.js')
 const wechatDao = require("../dao/wechatDao.js");
-const APPID = "wx986fbde73494c321";
-const SECRET = "51dd60cf87edc438b11e240cb88070d9";
-const key = "youxuanYOUXUAN946578385496877346";
+const APPID = "";
+const SECRET = "";
+const key = "";
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -42,12 +42,12 @@ function o2() {
 }
 
 
-function o1() {
+function ocr() {
   var img = fs.readFileSync("./gn/views/img/1.jpg").toString("base64");
   var postData = querystring.stringify({
     "image": img,
   });
-  let token = "24.22d73a3340e3f0827f29410802725c99.2592000.1548572631.282335-11119121";
+  let token = "";
   var options = {
     hostname: 'aip.baidubce.com',
     port: 443,
