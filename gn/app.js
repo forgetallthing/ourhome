@@ -60,37 +60,6 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
-// //每小时一次获取access_token
-// schedule.scheduleJob('0 0 * * * *', function () {
-//   console.log('scheduleCronstyle:' + new Date());
-//   get_access_token()
-// });
-
-function get_access_token() {
-  const access_token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx986fbde73494c321&secret=51dd60cf87edc438b11e240cb88070d9";
-  https.get(access_token_url, function (res) {
-    let datas = [];
-    let size = 0;
-    res.on('data', function (data) {
-      datas.push(data);
-      size += data.length;
-    });
-    res.on("end", function () {
-      let buff = Buffer.concat(datas, size);
-      let result = JSON.parse(buff.toString());
-      if (result.access_token) {
-        global.access_token = result.access_token;
-      }
-      console.log(global.access_token);
-    });
-  }).on("error", function (err) {
-    console.log(err)
-  });
-}
-
-get_access_token()
-
-
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
