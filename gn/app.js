@@ -1,21 +1,19 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var ejs = require('ejs');
-var schedule = require("node-schedule");
-var https = require("https");
-var Config = require("./common/config.js")
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const ejs = require('ejs');
+const schedule = require("node-schedule");
+const https = require("https");
+const Config = require("./common/config.js")
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var wechatRouter = require('./routes/wechatRouter');
-
-var app = express();
+const indexRouter = require('./routes/index');
+const app = express();
 
 const MongoClient = require("mongodb").MongoClient;
 const mongoUrl = "mongodb://" + Config.DB_USER + ":" + Config.DB_PW + "@" + Config.sys_mongo;
+const routerMap = require("./routes/router");
 
 MongoClient.connect(mongoUrl, { authSource: "admin", useNewUrlParser: true, autoReconnect: true, connectTimeoutMS: 3600000, socketTimeoutMS: 3600000, wtimeout: 0 }, function (err, client) {
   if (err) throw err;
@@ -52,8 +50,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'views')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/wechat', wechatRouter);
+routerMap.forEach(v => {
+  app.use("/" + v.path, v.r);
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

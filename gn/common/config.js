@@ -5,5 +5,6 @@ const Config = {
     log_db: "log",
     DB_USER: "adminUser",
     DB_PW: "adminPass",
+    errLog: "./gn/app.err",
 };
 module.exports = Config;

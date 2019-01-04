@@ -12,53 +12,24 @@
     填写问卷:
     <input type="text">
     <input id="submit_b" type="button" value="提交">
-    <input id="submit_c" type="button" value="<%=title%>">
-    <input id="submit_d" type="button" value="发红包">
-    <input id="submit_e" type="button" value="获取红包发放状态">
-    <input id="submit_f" type="button" value="文字识别">
+    <input id="submit_c" type="button" value="test_router">
+    <input id="submit_d" type="button" value="1">
+    <input id="submit_e" type="button" value="2">
+    <input id="submit_f" type="button" value="3">
     <div id="qrcode"></div>
     <script src="./qrcode.min.js"></script>
     <script src="./jquery-2.1.0.js"></script>
     <script>
-        document.getElementById("submit_b").addEventListener("click", function () {
-            window.location.href = href;
-        })
-        var APPID = "wx986fbde73494c321";
-        var REDIRECT_URI = "http://ipromiseyourlife.com/wechat/wechat.html";
-        var SCOPE = "snsapi_userinfo";
-        var STATE = ""; //重定向后会带上state参数，开发者可以填写a-zA-Z0-9的参数值，最多128字节
-        var href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + APPID + "&redirect_uri=" + encodeURIComponent(REDIRECT_URI) + "&response_type=code&scope=" + SCOPE + "&state=" + STATE + "#wechat_redirect"
-        document.getElementById("submit_f").addEventListener("click", function () {
-            $.ajax({
-                type: "get",
-                url: "/wechat/luosimao",
-                async: true,
-                data: {
-                    moneySum: 100
-                },
-                success: function (data) {
-                    console.log(JSON.stringify(data))
-                },
-                error: function (e) {
-                    alert("服务器错误，请联系我们")
-                }
-            })
-        })
-        var qrcode = new QRCode("qrcode");
-        var x = "<%=title%>"
-        console.log("<%=title%>")
-        console.log(x)
         document.getElementById("submit_c").addEventListener("click", function () {
             $.ajax({
-                type: "get",
-                url: "/wechat/getPayLink",
+                type: "post",
+                url: "/user/userLogin",
                 async: true,
                 data: {
                     moneySum: 100
                 },
                 success: function (data) {
                     console.log(JSON.stringify(data))
-                    qrcode.makeCode(data.data.code_url);
                 },
                 error: function (e) {
                     alert("服务器错误，请联系我们")
@@ -66,34 +37,8 @@
             })
         })
         document.getElementById("submit_d").addEventListener("click", function () {
-            $.ajax({
-                type: "get",
-                url: "/wechat/sendRedBag",
-                async: true,
-                data: {
-                },
-                success: function (data) {
-                    console.log(JSON.stringify(data))
-                },
-                error: function (e) {
-                    alert("服务器错误，请联系我们")
-                }
-            })
         })
         document.getElementById("submit_e").addEventListener("click", function () {
-            $.ajax({
-                type: "get",
-                url: "/wechat/getSendRedBagState",
-                async: true,
-                data: {
-                },
-                success: function (data) {
-                    console.log(JSON.stringify(data))
-                },
-                error: function (e) {
-                    alert("服务器错误，请联系我们")
-                }
-            })
         })
     </script>
 </body>
