@@ -1,6 +1,7 @@
 /*eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* global bayeux*/
 const config = require("./config");
+var path = require('path');
 const fs = require("fs");
 
 exports.genId = function () {
@@ -76,7 +77,6 @@ exports.arraySync = function (bsFunc, ar) {
 function toPromise() {
     var f = arguments[0];
     var a = Array.prototype.slice.call(arguments, 1);
-
     return new Promise(function (resolve, reject) {
         a.push(function (err, r) {
             if (err) {
@@ -96,8 +96,8 @@ exports.err = function (err) {
     } else if (err.message) {
         console.error(err.message);
     }
-    var errFile = config.errLog;
-    fs.appendFile(errFile, Date.now() + "\t" + (err.stack ? err.stack : err.message) + "\r\n", function (err) {
+    const errFile = config.errLog;
+    fs.appendFile(path.dirname(errFile), Date.now() + "\t" + (err.stack ? err.stack : err.message) + "\r\n", function (err) {
         if (err) {
             console.error(err);
         }

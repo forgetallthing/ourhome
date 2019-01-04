@@ -10,7 +10,8 @@ const userDao = require("../dao/userDao")
 function userLogin(userId, p, callback) {
     co(function* () {
         console.log(userId, p)
-        callback({ ti: "mgtLevel" });
+        let user = yield common.toPromise(userDao.getUserInfo, { userName: p, password: p });
+        callback(0, { OK: "mgtLevel" });
     }).catch(function (err) {
         callback(err);
     });

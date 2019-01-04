@@ -58,12 +58,12 @@ for (let k in routerMap) {
             }
             (rn => {
                 r[rn.method]("/" + rn.path, function (req, res) {
-                    if(!req.session){
-                        res.send(msg.buildErrMsg({message:"您没有登录~"}));
-                        return;
-                    }
+                    // if(!req.session){
+                    //     res.send(msg.buildErrMsg({message:"您没有登录~"}));
+                    //     return;
+                    // }
                     let argVal = {
-                        userId: req.session,
+                        userId: req.session.userId,
                         userLogin: req.session.userLogin,
                         menuId: req.session.menuId,
                     };
