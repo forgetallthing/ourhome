@@ -6,7 +6,12 @@ const logger = require('morgan');
 const ejs = require('ejs');
 const schedule = require("node-schedule");
 const https = require("https");
-const Config = require("./common/config.js")
+const Config = require("./common/config.js");
+const common = require("./common/common");
+const compression = require("compression");
+const session = require("express-session");
+const MongoStore = require("connect-mongo")(session);
+const mongoMorgan = require("mongo-morgan");
 
 const indexRouter = require('./routes/index');
 const app = express();
@@ -36,6 +41,56 @@ MongoClient.connect(mongoUrl, { authSource: "admin", useNewUrlParser: true, conn
   const db = client.db(Config.log_db);
   global.logdb = db;
 });
+
+//启用压缩数据
+app.use(compression());
+
+//启用session
+const sessionMongoUrl = "mongodb://" + Config.DB_USER + ":" + Config.DB_PW + "@" + Config.sys_mongo + "/" + Config.mongo_db + "?authSource=admin";
+app.use(session({
+  store: new MongoStore({
+    url: sessionMongoUrl,
+  }),
+  secret: "open your eye",
+  resave: false,
+  saveUninitialized: false,
+  rolling: true,
+  cookie: { maxAge: 24 * 60 * 60 * 1000 }
+}));
+
+mongoMorgan.token("userLogin", function getUserLogin(req) {
+  return req.session.userLogin;
+});
+
+mongoMorgan.token("param", function getUserLogin(req) {
+  let p = "";
+  if (req.method == "GET") {
+    p = req.query.param;
+  } else {
+    p = req.body.param;
+  }
+  return p ? JSON.stringify(p) : "\"-\"";
+});
+
+mongoMorgan.token("date", function getUserLogin() {
+  return Date.now();
+});
+
+mongoMorgan.token("date_format", function getUserLogin() {
+  return new Date().toLocaleString();
+});
+
+//启用日志
+const logMongoUrl = "mongodb://" + Config.DB_USER + ":" + Config.DB_PW + "@" + Config.sys_mongo + "/" + Config.log_db + "?authSource=admin";
+app.use(mongoMorgan(logMongoUrl,
+  "{\"ra\":\":remote-addr\",\"date\":\":date\",\"date_format\":\":date_format\",\"mt\":\":method\",\"url\":\":url\"," +
+  "\"status\":\":status\",\"resLength\":\":res[content-length]\"," +
+  "\"referrer\":\":referrer\",\"user_agent\":\":user-agent\",\"response-time\":\":response-time\"," +
+  "\"login\":\":userLogin\",\"param\"::param}",
+  {
+    collection: "logs"
+  }));
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
