@@ -4,7 +4,7 @@ const common = require("../common/common");
 const msg = require("../common/message");
 const routerMap = {
     user: {
-        // routerFile: require("./ncc"),
+        // routerFile: require("./ncc"),`````````````
         manager: require("../contribution/userManager"),
         router: {
             userLogin: { method: "post" },
@@ -58,23 +58,22 @@ for (let k in routerMap) {
             }
             (rn => {
                 r[rn.method]("/" + rn.path, function (req, res) {
-                    // if(!req.session){
-                    //     res.send(msg.buildErrMsg({message:"您没有登录~"}));
-                    //     return;
-                    // }
+                    if(!req.session){
+                        res.send(msg.buildErrMsg({message:"您没有登录~"}));
+                        return;
+                    }
                     let argVal = {
                         userId: req.session.userId,
                         userLogin: req.session.userLogin,
                         menuId: req.session.menuId,
                     };
-                    argVal.p = JSON.parse(req[rn.method == "get" ? "query" : "body"].param);
+                    argVal.p = req[rn.method == "get" ? "query" : "body"].p;
                     argVal.puserid = common.clone(argVal.p);
                     argVal.puserid.userid = argVal.userId;
                     let arg = rn.arg.map(v => argVal[v]);
                     arg.push(rn.ret ? (err, r) => {
                         rn.ret(res, err, r);
                     } : (err, r) => {
-                        res.setHeader("Access-Control-Allow-Origin", "*");
                         if (err) {
                             res.send(msg.buildErrMsg(err));
                         } else {

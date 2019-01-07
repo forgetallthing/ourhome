@@ -42,6 +42,13 @@ MongoClient.connect(mongoUrl, { authSource: "admin", useNewUrlParser: true, conn
   global.logdb = db;
 });
 
+app.all("*", function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With,content-type");
+  res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+  next();
+});
+
 //启用压缩数据
 app.use(compression());
 
@@ -102,7 +109,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'views')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 routerMap.forEach(v => {
