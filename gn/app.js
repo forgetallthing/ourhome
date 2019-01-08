@@ -12,6 +12,7 @@ const compression = require("compression");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const mongoMorgan = require("mongo-morgan");
+const bodyParser = require("body-parser");
 
 const indexRouter = require('./routes/index');
 const app = express();
@@ -42,7 +43,7 @@ MongoClient.connect(mongoUrl, { authSource: "admin", useNewUrlParser: true, conn
   global.logdb = db;
 });
 
-app.all("*", function(req, res, next) {
+app.all("*", function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With,content-type");
   res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
@@ -65,6 +66,9 @@ app.use(session({
   cookie: { maxAge: 24 * 60 * 60 * 1000 }
 }));
 
+app.use(bodyParser.json({ limit: "100mb" }));
+app.use(bodyParser.urlencoded({ extended: false, limit: "100mb" }))
+
 mongoMorgan.token("userLogin", function getUserLogin(req) {
   return req.session.userLogin;
 });
@@ -72,9 +76,9 @@ mongoMorgan.token("userLogin", function getUserLogin(req) {
 mongoMorgan.token("param", function getUserLogin(req) {
   let p = "";
   if (req.method == "GET") {
-    p = req.query.param;
+    p = req.query.p;
   } else {
-    p = req.body.param;
+    p = req.body.p;
   }
   return p ? JSON.stringify(p) : "\"-\"";
 });
@@ -86,17 +90,6 @@ mongoMorgan.token("date", function getUserLogin() {
 mongoMorgan.token("date_format", function getUserLogin() {
   return new Date().toLocaleString();
 });
-
-//启用日志
-const logMongoUrl = "mongodb://" + Config.DB_USER + ":" + Config.DB_PW + "@" + Config.sys_mongo + "/" + Config.log_db + "?authSource=admin";
-app.use(mongoMorgan(logMongoUrl,
-  "{\"ra\":\":remote-addr\",\"date\":\":date\",\"date_format\":\":date_format\",\"mt\":\":method\",\"url\":\":url\"," +
-  "\"status\":\":status\",\"resLength\":\":res[content-length]\"," +
-  "\"referrer\":\":referrer\",\"user_agent\":\":user-agent\",\"response-time\":\":response-time\"," +
-  "\"login\":\":userLogin\",\"param\"::param}",
-  {
-    collection: "logs"
-  }));
 
 
 // view engine setup
@@ -110,6 +103,34 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+//req.query.i为isbase64
+app.use(function (req, res, next) {
+  "use strict";
+  if (req.method == "GET") {
+    if (req.query.p && req.query.i == "1") {
+      let b = new common.Base64();
+      req.query.p = b.decode(decodeURIComponent(req.query.p));
+    }
+  } else {
+    if (req.body.p && req.body.i == "1") {
+      let b = new common.Base64();
+      req.body.p = b.decode(decodeURIComponent(req.body.p));
+    }
+  }
+  next();
+});
+
+//启用日志
+const logMongoUrl = "mongodb://" + Config.DB_USER + ":" + Config.DB_PW + "@" + Config.sys_mongo + "/" + Config.log_db + "?authSource=admin";
+app.use(mongoMorgan(logMongoUrl,
+  "{\"ra\":\":remote-addr\",\"date\":\":date\",\"date_format\":\":date_format\",\"mt\":\":method\",\"url\":\":url\"," +
+  "\"status\":\":status\",\"resLength\":\":res[content-length]\"," +
+  "\"referrer\":\":referrer\",\"user_agent\":\":user-agent\",\"response-time\":\":response-time\"," +
+  "\"login\":\":userLogin\",\"param\"::param}",
+  {
+    collection: "logs"
+  }));
 
 app.use('/', indexRouter);
 routerMap.forEach(v => {

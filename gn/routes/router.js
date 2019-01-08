@@ -58,8 +58,8 @@ for (let k in routerMap) {
             }
             (rn => {
                 r[rn.method]("/" + rn.path, function (req, res) {
-                    if(!req.session){
-                        res.send(msg.buildErrMsg({message:"您没有登录~"}));
+                    if (!req.session) {
+                        res.send(msg.buildErrMsg({ message: "您没有登录~" }));
                         return;
                     }
                     let argVal = {
@@ -67,7 +67,7 @@ for (let k in routerMap) {
                         userLogin: req.session.userLogin,
                         menuId: req.session.menuId,
                     };
-                    argVal.p = req[rn.method == "get" ? "query" : "body"].p;
+                    argVal.p = JSON.parse(req[rn.method == "get" ? "query" : "body"].p);
                     argVal.puserid = common.clone(argVal.p);
                     argVal.puserid.userid = argVal.userId;
                     let arg = rn.arg.map(v => argVal[v]);

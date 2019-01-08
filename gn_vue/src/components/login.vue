@@ -155,7 +155,7 @@
 </template>
 
 <script>
-import common from '../modules/common/common.js';
+import user from "../modules/user/user.js";
 export default {
   name: "login",
   data() {
@@ -211,7 +211,9 @@ export default {
   },
   methods: {
     onSubmit() {
-        common.ok()
+      user.login(this.form.name, this.form.password).then(res => {
+        console.log(res);
+      });
     },
     to_forgetpass() {
       this.flag = "forgetpass";
