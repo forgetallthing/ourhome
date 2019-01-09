@@ -2,24 +2,35 @@ import axios from "axios";
 import qs from "qs";
 
 let c = {
-    ok() {
-        axios.get('//localhost:3000/user/userLogin', {
-            params: {
+    baseURL: '//localhost:3000/',
+    ajaxGet: (url, data, callback) => {
+        if (Object.prototype.toString.call(data) !== "[object Object]") return;
+        let b = new c.Base64();
+        axios({
+            method: 'get',
+            baseURL: c.baseURL,
+            url: url,
+            params: { i: 1, p: encodeURIComponent(b.encode(JSON.stringify(data))) }
+        }).then(function (result) {
+            let r = result.data;
+            if (r.state == 0) {
+                alert(r.value);
+            } else if (r.state == 1) {
+                callback(r);
+            } else {
+                console.error(result)
             }
-        })
-            .then(function (response) {
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        }).catch(function (error) {
+            console.error(error);
+        });
     },
     ajaxPost: (url, data, callback) => {
         if (Object.prototype.toString.call(data) !== "[object Object]") return;
         let b = new c.Base64();
         axios({
             method: 'post',
-            url: '//localhost:3000/user/userLogin',
+            baseURL: c.baseURL,
+            url: url,
             data: qs.stringify({ i: 1, p: encodeURIComponent(b.encode(JSON.stringify(data))) })
         }).then(function (result) {
             let r = result.data;

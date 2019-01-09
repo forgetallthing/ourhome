@@ -1,6 +1,9 @@
 <template>
     <div class="hello">
         <div class='bg'></div>
+        <div class='marker'></div>
+        <div class='title'>苟娜之家</div>
+        <div class='banner'>管理您的苟娜,以及三中全会会议纪要</div>
         <div class='block' v-show="flag=='login'">
             <el-tabs v-model="login_active">
                 <el-tab-pane label="密码登录" name="first">
@@ -242,6 +245,38 @@ export default {
   background-image: url("../assets/bg.jpg");
   background-size: cover;
   position: relative;
+}
+.marker {
+  width: 160px;
+  height: 160px;
+  border-radius: 3px;
+  background-image: url("../assets/logo.png");
+  background-size: cover;
+  position: absolute;
+  top: 16px;
+  left: 4%;
+}
+.title {
+  width: 300px;
+  padding: 15px 25px;
+  position: absolute;
+  top: 90px;
+  left: 50%;
+  margin-left: -150px;
+  font-size: 32px;
+  color: #fff;
+  text-align: center;
+}
+.banner {
+  width: 500px;
+  padding: 15px 25px;
+  position: absolute;
+  left: 50%;
+  margin-left: -250px;
+  top: 155px;
+  font-size: 24px;
+  color: #fff;
+  text-align: center;
 }
 .block {
   width: 300px;
