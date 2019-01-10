@@ -242,7 +242,7 @@ export default {
 .bg {
   width: 100%;
   height: 100%;
-  background-image: url("../assets/bg1.png");
+  background-image: url("../assets/bg.jpg");
   background-size: cover;
   position: relative;
 }
