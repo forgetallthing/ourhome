@@ -1,9 +1,9 @@
 <template>
     <div class="hello">
         <div class='bg'></div>
-        <div class='marker'></div>
-        <div class='title'>苟娜之家</div>
-        <div class='banner'>管理您的苟娜,以及三中全会会议纪要</div>
+        <div class='marker'>GN | 通行证</div>
+        <div class='title'>GN科技管理平台</div>
+        <div class='banner'>管理GN旗下各项系统以及相关服务</div>
         <div class='block' v-show="flag=='login'">
             <el-tabs v-model="login_active">
                 <el-tab-pane label="密码登录" name="first">
@@ -242,19 +242,20 @@ export default {
 .bg {
   width: 100%;
   height: 100%;
-  background-image: url("../assets/bg.jpg");
+  background-image: url("../assets/bg1.png");
   background-size: cover;
   position: relative;
 }
 .marker {
-  width: 160px;
-  height: 160px;
-  border-radius: 3px;
-  background-image: url("../assets/logo.png");
-  background-size: cover;
+  width: 240px;
+  height: 60px;
+  /* background-image: url("../assets/logo.png");
+  background-size: cover; */
   position: absolute;
-  top: 16px;
-  left: 4%;
+  top: 36px;
+  left: 6%;
+  font-size: 32px;
+  color: #fff;
 }
 .title {
   width: 300px;
@@ -263,7 +264,7 @@ export default {
   top: 90px;
   left: 50%;
   margin-left: -150px;
-  font-size: 32px;
+  font-size: 40px;
   color: #fff;
   text-align: center;
 }
