@@ -96,8 +96,7 @@ exports.err = function (err) {
     } else if (err.message) {
         console.error(err.message);
     }
-    const errFile = config.errLog;
-    fs.appendFile(path.dirname(errFile), Date.now() + "\t" + (err.stack ? err.stack : err.message) + "\r\n", function (err) {
+    fs.appendFile(path.join(__dirname, config.errLog), Date.now() + "\t" + (err.stack ? err.stack : err.message) + "\r\n", function (err) {
         if (err) {
             console.error(err);
         }
@@ -148,11 +147,11 @@ exports.getDbUrl = function (cfg, dbName) {
     return url.join("");
 };
 
-exports.Base64 = function() {
+exports.Base64 = function () {
     // private property
     var _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
     // public method for encoding
-    this.encode = function(input) {
+    this.encode = function (input) {
         var output = "";
         var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
         var i = 0;
@@ -178,7 +177,7 @@ exports.Base64 = function() {
     };
 
     // public method for decoding
-    this.decode = function(input) {
+    this.decode = function (input) {
         var output = "";
         var chr1, chr2, chr3;
         var enc1, enc2, enc3, enc4;
@@ -205,7 +204,7 @@ exports.Base64 = function() {
     };
 
     // private method for UTF-8 encoding
-    var _utf8_encode = function(string) {
+    var _utf8_encode = function (string) {
         string = string.replace(/\r\n/g, "\n");
         var utftext = "";
         for (var n = 0; n < string.length; n++) {
@@ -226,7 +225,7 @@ exports.Base64 = function() {
     };
 
     // private method for UTF-8 decoding
-    var _utf8_decode = function(utftext) {
+    var _utf8_decode = function (utftext) {
         var string = "";
         var i = 0;
         var c, c1, c2;

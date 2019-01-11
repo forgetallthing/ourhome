@@ -9,20 +9,19 @@ const routerMap = {
         router: {
             userLogin: { method: "post" },
             // removeTotalCheck: { arg: ["userId", "userLogin", "p"] },
-            // exportExcel: {
-            //     ret: function (res, err, r) {
-            //         if (err) {
-            //             res.send(err);
-            //         } else {
-            //             res.setHeader("Content-disposition", "attachment; filename=" + encodeURIComponent(r.fileName));
-            //             res.writeHead(200, { "Content-Type": "application/octet-stream" });
-            //             r.rs.on("end", function () {
-            //                 res.end();
-            //             });
-            //             r.rs.pipe(res);
-            //         }
-            //     }
-            // }
+            getKey: {
+                method: "post",
+                ret: function (req, res, err, r) {
+                    if (err) {
+                        res.send(msg.buildErrMsg(err));
+                    } else {
+                        req.session.key = r.key;
+                        res.send(msg.buildErrMsg(err));
+                        
+                        // res.send(msg.buildSuccessMsg(r));
+                    }
+                }
+            }
         }
     },
 };
@@ -72,7 +71,7 @@ for (let k in routerMap) {
                     argVal.puserid.userid = argVal.userId;
                     let arg = rn.arg.map(v => argVal[v]);
                     arg.push(rn.ret ? (err, r) => {
-                        rn.ret(res, err, r);
+                        rn.ret(req, res, err, r);
                     } : (err, r) => {
                         if (err) {
                             res.send(msg.buildErrMsg(err));

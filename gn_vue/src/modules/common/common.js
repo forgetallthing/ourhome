@@ -14,14 +14,25 @@ let c = {
         }).then(function (result) {
             let r = result.data;
             if (r.state == 0) {
-                alert(r.value);
+                if (typeof r == "object") {
+                    this.$alert(JSON.stringify(r.value), '似乎出了点问题', {
+                        confirmButtonText: '明白了',
+                    });
+                } else {
+                    this.$alert(r.value, '似乎出了点问题', {
+                        confirmButtonText: '明白了',
+                    });
+                }
+                callback(0);
             } else if (r.state == 1) {
-                callback(r);
+                callback(r.value);
             } else {
                 console.error(result)
+                callback(0);
             }
         }).catch(function (error) {
             console.error(error);
+            callback(0);
         });
     },
     ajaxPost: (url, data, callback) => {
@@ -35,14 +46,25 @@ let c = {
         }).then(function (result) {
             let r = result.data;
             if (r.state == 0) {
-                alert(r.value);
+                if (typeof r == "object") {
+                    this.$alert(JSON.stringify(r.value), '似乎出了点问题', {
+                        confirmButtonText: '明白了',
+                    });
+                } else {
+                    this.$alert(r.value, '似乎出了点问题', {
+                        confirmButtonText: '明白了',
+                    });
+                }
+                callback(0);
             } else if (r.state == 1) {
-                callback(r);
+                callback(r.value);
             } else {
                 console.error(result)
+                callback(0);
             }
         }).catch(function (error) {
             console.error(error);
+            callback(0);
         });
     },
     Base64() {

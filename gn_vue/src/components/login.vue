@@ -9,7 +9,7 @@
         <div class='block' v-show="flag=='login'">
             <el-tabs v-model="login_active">
                 <el-tab-pane label="密码登录" name="first">
-                    <el-form label-position="left" label-width="40px" :model="form">
+                    <el-form label-position="left" :rules="rules1" label-width="40px" :model="form">
                         <el-form-item label="账号">
                             <el-input v-model="form.name"></el-input>
                         </el-form-item>
@@ -172,7 +172,7 @@ imgObject.onload = function() {
 export default {
   name: "login",
   data() {
-    var validatePass = (rule, value, callback) => {
+    let validatePass = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入密码"));
       } else {
@@ -182,7 +182,25 @@ export default {
         callback();
       }
     };
-    var validatePass2 = (rule, value, callback) => {
+    let validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.regiform.pass) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
+    let validateName = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.regiform.pass) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
+    let validatePassword = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
       } else if (value !== this.regiform.pass) {
@@ -211,6 +229,10 @@ export default {
         email: "",
         checkPass: ""
       },
+      rules1: {
+        name: [{ validator: validateName, trigger: "blur" }],
+        password: [{ validator: validatePassword, trigger: "blur" }]
+      },
       rules2: {
         pass: [{ validator: validatePass, trigger: "blur" }],
         checkPass: [{ validator: validatePass2, trigger: "blur" }]
@@ -219,7 +241,8 @@ export default {
         name: "",
         email: ""
       },
-      checked: true
+      checked: true,
+      key: ""
     };
   },
   methods: {
@@ -232,13 +255,28 @@ export default {
       this.flag = "forgetpass";
     },
     to_register() {
-      this.flag = "register";
+      this.$message({
+        showClose: true,
+        message: "注册未开放",
+        type: 'warning'
+      });
+      //   this.flag = "register";
     },
     to_login() {
       this.flag = "login";
     },
     register() {},
-    getnewpass() {}
+    getnewpass() {},
+    getKey() {
+      user.getKey().then(res => {
+        if (res) {
+          this.key = res.key;
+        }
+      });
+    }
+  },
+  created() {
+    this.getKey();
   }
 };
 </script>
