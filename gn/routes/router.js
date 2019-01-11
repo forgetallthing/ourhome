@@ -16,9 +16,7 @@ const routerMap = {
                         res.send(msg.buildErrMsg(err));
                     } else {
                         req.session.key = r.key;
-                        res.send(msg.buildErrMsg(err));
-                        
-                        // res.send(msg.buildSuccessMsg(r));
+                        res.send(msg.buildSuccessMsg(r));
                     }
                 }
             }

@@ -1,5 +1,6 @@
 import axios from "axios";
 import qs from "qs";
+import { MessageBox } from "element-ui";
 
 let c = {
     baseURL: '//localhost:3000/',
@@ -13,19 +14,13 @@ let c = {
             params: { i: 1, p: encodeURIComponent(b.encode(JSON.stringify(data))) }
         }).then(function (result) {
             let r = result.data;
-            if (r.state == 0) {
-                if (typeof r == "object") {
-                    this.$alert(JSON.stringify(r.value), '似乎出了点问题', {
-                        confirmButtonText: '明白了',
-                    });
-                } else {
-                    this.$alert(r.value, '似乎出了点问题', {
-                        confirmButtonText: '明白了',
-                    });
-                }
-                callback(0);
-            } else if (r.state == 1) {
+            if (r.state == 1) {
                 callback(r.value);
+            } else if (r.state == 0) {
+                MessageBox(JSON.stringify(r.value), '似乎出了点问题', {
+                    confirmButtonText: '明白了',
+                });
+                callback(0);
             } else {
                 console.error(result)
                 callback(0);
@@ -45,19 +40,13 @@ let c = {
             data: qs.stringify({ i: 1, p: encodeURIComponent(b.encode(JSON.stringify(data))) })
         }).then(function (result) {
             let r = result.data;
-            if (r.state == 0) {
-                if (typeof r == "object") {
-                    this.$alert(JSON.stringify(r.value), '似乎出了点问题', {
-                        confirmButtonText: '明白了',
-                    });
-                } else {
-                    this.$alert(r.value, '似乎出了点问题', {
-                        confirmButtonText: '明白了',
-                    });
-                }
-                callback(0);
-            } else if (r.state == 1) {
+            if (r.state == 1) {
                 callback(r.value);
+            } else if (r.state == 0) {
+                MessageBox(JSON.stringify(r.value), '似乎出了点问题', {
+                    confirmButtonText: '明白了',
+                });
+                callback(0);
             } else {
                 console.error(result)
                 callback(0);

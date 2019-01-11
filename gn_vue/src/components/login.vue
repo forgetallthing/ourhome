@@ -9,15 +9,15 @@
         <div class='block' v-show="flag=='login'">
             <el-tabs v-model="login_active">
                 <el-tab-pane label="密码登录" name="first">
-                    <el-form label-position="left" :rules="rules1" label-width="40px" :model="form">
-                        <el-form-item label="账号">
-                            <el-input v-model="form.name"></el-input>
+                    <el-form label-position="left" status-icon :rules="loginRules" ref="form" label-width="40px" :model="form">
+                        <el-form-item label="账号" prop="name">
+                            <el-input v-model="form.name" clearable></el-input>
                         </el-form-item>
-                        <el-form-item label="密码">
-                            <el-input type="password" v-model="form.password" autocomplete="off"></el-input>
+                        <el-form-item label="密码" prop="password">
+                            <el-input type="password" v-model="form.password" autocomplete="off" clearable></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button class='float_right' style='width:298px;' type="primary" @click="onSubmit">登录</el-button>
+                            <el-button class='float_right' style='width:298px;' type="primary" @click="login('form')">登录</el-button>
                         </el-form-item>
                         <el-row>
                             <el-col :span="15">
@@ -59,7 +59,7 @@
                             <el-input v-model="noteform.password"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button class='float_right' style='width:298px;' type="primary" @click="onSubmit">登录</el-button>
+                            <el-button class='float_right' style='width:298px;' type="primary">登录</el-button>
                         </el-form-item>
                         <el-row>
                             <el-col :span="15">
@@ -192,19 +192,15 @@ export default {
       }
     };
     let validateName = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
-      } else if (value !== this.regiform.pass) {
-        callback(new Error("两次输入密码不一致!"));
+      if (!value) {
+        callback(new Error("账号呢?"));
       } else {
         callback();
       }
     };
     let validatePassword = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
-      } else if (value !== this.regiform.pass) {
-        callback(new Error("两次输入密码不一致!"));
+      if (!value) {
+        callback(new Error("密码呢?"));
       } else {
         callback();
       }
@@ -229,7 +225,7 @@ export default {
         email: "",
         checkPass: ""
       },
-      rules1: {
+      loginRules: {
         name: [{ validator: validateName, trigger: "blur" }],
         password: [{ validator: validatePassword, trigger: "blur" }]
       },
@@ -246,9 +242,19 @@ export default {
     };
   },
   methods: {
-    onSubmit() {
-      user.login(this.form.name, this.form.password).then(res => {
-        console.log(res);
+    login(formName) {
+      if (!this.key) {
+        this.$message.error("钥匙不见了，请刷新重试");
+        return;
+      }
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          user.login(this.form.name, this.form.password).then(res => {
+            console.log(res);
+          });
+        } else {
+          return false;
+        }
       });
     },
     to_forgetpass() {
@@ -258,7 +264,7 @@ export default {
       this.$message({
         showClose: true,
         message: "注册未开放",
-        type: 'warning'
+        type: "warning"
       });
       //   this.flag = "register";
     },
@@ -318,7 +324,6 @@ export default {
 }
 .title {
   width: 300px;
-  padding: 15px 25px;
   position: absolute;
   top: 90px;
   left: 50%;
@@ -329,7 +334,6 @@ export default {
 }
 .banner {
   width: 500px;
-  padding: 15px 25px;
   position: absolute;
   left: 50%;
   margin-left: -250px;
@@ -346,7 +350,7 @@ export default {
   position: absolute;
   top: 250px;
   left: 50%;
-  margin-left: -150px;
+  margin-left: -175px;
 }
 .block1 {
   width: 300px;
