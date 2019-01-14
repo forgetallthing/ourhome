@@ -244,7 +244,7 @@ export default {
   methods: {
     login(formName) {
       if (!this.key) {
-        this.$message.error("钥匙不见了，请刷新重试");
+        this.$message.error("钥匙不见啦，请刷新重试");
         return;
       }
       this.$refs[formName].validate(valid => {
