@@ -155,7 +155,6 @@
                 </el-tab-pane>
             </el-tabs>
         </div>
-
     </div>
 </template>
 
@@ -274,21 +273,24 @@ export default {
     register() {},
     getnewpass() {},
     getKey() {
-      user.getKey().then(res => {
+      user.getKey(this).then(res => {
         if (res) {
           this.key = res.key;
         }
       });
     }
   },
-  created() {
-    this.getKey();
+  created() {},
+  mounted() {
+    this.$nextTick(function() {
+      this.getKey();
+    });
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
 .hello {
   width: 100%;
   height: 100%;

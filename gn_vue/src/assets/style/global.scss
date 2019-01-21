@@ -1,0 +1,49 @@
+@import './reset.scss';
+
+@mixin center() {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+  width: 100%;
+  height: 100%;
+}
+
+.el-input__inner {
+  height: 34px !important;
+  line-height: 34px !important;
+}
+
+.el-button {
+  padding: 9px 20px !important;
+}
+
+._textright {
+  text-align: right !important;
+}
+
+._textcenter {
+  text-align: center !important;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.float_right {
+  float: right
+}
+
+.font_14 {
+  font-size: 14px;
+}
+
+.marginbottom_20 {
+  margin-bottom: 20px;
+}
