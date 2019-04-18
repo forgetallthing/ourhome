@@ -13,6 +13,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const mongoMorgan = require("mongo-morgan");
 const bodyParser = require("body-parser");
+const websocket = require("./websocket/websocket.js");
 
 const indexRouter = require('./routes/index');
 const app = express();
@@ -21,7 +22,14 @@ const MongoClient = require("mongodb").MongoClient;
 const mongoUrl = "mongodb://" + Config.DB_USER + ":" + Config.DB_PW + "@" + Config.sys_mongo;
 const routerMap = require("./routes/router");
 
-MongoClient.connect(mongoUrl, { authSource: "admin", useNewUrlParser: true, autoReconnect: true, connectTimeoutMS: 3600000, socketTimeoutMS: 3600000, wtimeout: 0 }, function (err, client) {
+MongoClient.connect(mongoUrl, {
+  authSource: "admin",
+  useNewUrlParser: true,
+  autoReconnect: true,
+  connectTimeoutMS: 3600000,
+  socketTimeoutMS: 3600000,
+  wtimeout: 0
+}, function (err, client) {
   if (err) throw err;
   const db = client.db(Config.mongo_db);
   global.mongodb = db;
@@ -37,7 +45,13 @@ MongoClient.connect(mongoUrl, { authSource: "admin", useNewUrlParser: true, auto
 });
 
 //日志
-MongoClient.connect(mongoUrl, { authSource: "admin", useNewUrlParser: true, connectTimeoutMS: 3600000, socketTimeoutMS: 3600000, wtimeout: 0 }, function (err, client) {
+MongoClient.connect(mongoUrl, {
+  authSource: "admin",
+  useNewUrlParser: true,
+  connectTimeoutMS: 3600000,
+  socketTimeoutMS: 3600000,
+  wtimeout: 0
+}, function (err, client) {
   if (err) throw err;
   const db = client.db(Config.log_db);
   global.logdb = db;
@@ -63,11 +77,18 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   rolling: true,
-  cookie: { maxAge: 24 * 60 * 60 * 1000 }
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000
+  }
 }));
 
-app.use(bodyParser.json({ limit: "100mb" }));
-app.use(bodyParser.urlencoded({ extended: false, limit: "100mb" }))
+app.use(bodyParser.json({
+  limit: "100mb"
+}));
+app.use(bodyParser.urlencoded({
+  extended: false,
+  limit: "100mb"
+}))
 
 mongoMorgan.token("userLogin", function getUserLogin(req) {
   return req.session.userLogin;
@@ -96,11 +117,13 @@ mongoMorgan.token("date_format", function getUserLogin() {
 app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'jade');
 app.engine('html', ejs.__express);
-app.set('view engine', 'html');//设置视图引擎
+app.set('view engine', 'html'); //设置视图引擎
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -127,8 +150,7 @@ app.use(mongoMorgan(logMongoUrl,
   "{\"ra\":\":remote-addr\",\"date\":\":date\",\"date_format\":\":date_format\",\"mt\":\":method\",\"url\":\":url\"," +
   "\"status\":\":status\",\"resLength\":\":res[content-length]\"," +
   "\"referrer\":\":referrer\",\"user_agent\":\":user-agent\",\"response-time\":\":response-time\"," +
-  "\"login\":\":userLogin\",\"param\"::param}",
-  {
+  "\"login\":\":userLogin\",\"param\"::param}", {
     collection: "logs"
   }));
 
@@ -136,6 +158,8 @@ app.use('/', indexRouter);
 routerMap.forEach(v => {
   app.use("/" + v.path, v.r);
 });
+
+websocket.startWebsocket();
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

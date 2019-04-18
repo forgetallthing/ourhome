@@ -242,6 +242,9 @@ export default {
   },
   methods: {
     login(formName) {
+        this.$router.push({
+            path:'/home'
+        })
       if (!this.key) {
         this.$message.error("钥匙不见啦，请刷新重试");
         return;
@@ -250,6 +253,7 @@ export default {
         if (valid) {
           user.login(this.form.name, this.form.password).then(res => {
             console.log(res);
+            this.$router.push({ path:'/home'})
           });
         } else {
           return false;

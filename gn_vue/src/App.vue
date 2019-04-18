@@ -12,4 +12,11 @@ export default {
 </script>
 
 <style>
+html,
+body,
+#app,
+.el-container,
+.h {
+  height: 100%;
+}
 </style>
