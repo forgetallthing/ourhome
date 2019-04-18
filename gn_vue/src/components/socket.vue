@@ -81,7 +81,9 @@ export default {
         if (!this.userNickname) {
           this.openUserNicknameInput();
         } else {
-          this.socket = SocketIO("http://ipromiseyourlife.com:9999", {
+          // let socketUrl = "http://ipromiseyourlife.com:9999";
+          let socketUrl = "http://localhost:9999";
+          this.socket = SocketIO(socketUrl, {
             forceNew: false
           });
           let that = this;

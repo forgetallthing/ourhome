@@ -6,6 +6,7 @@ import {
 
 let c = {
   baseURL: '//localhost:3000/',
+  // baseURL: '//ipromiseyourlife.com/',
   ajaxGet: (url, data, callback) => {
     if (Object.prototype.toString.call(data) !== "[object Object]") return;
     let b = new c.Base64();
