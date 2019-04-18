@@ -3,7 +3,7 @@ import common from '../common/common.js';
 let user = {
   login: function (loginName, password) {
     const promise = new Promise((resolve, reject) => {
-      common.ajaxPost('/user/userLogin', {
+      common.ajaxPost('./user/userLogin', {
         loginName: loginName,
         pw: password
       }, result => {
@@ -14,7 +14,7 @@ let user = {
   },
   getKey: function (vm) {
     const promise = new Promise((resolve, reject) => {
-      common.ajaxPost('/user/getKey', {}, result => {
+      common.ajaxPost('./user/getKey', {}, result => {
         resolve(result);
       })
     });
