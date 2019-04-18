@@ -14,8 +14,12 @@
           <div class="userMes userMes-right">{{item.mes}}</div>
           <br style='clear:both' />
         </div>
-        <div class="broad" v-else-if="item.into"><span class="broad-text">{{item.name}}闪亮登场!!!</span></div>
-        <div class="broad" v-else><span class="broad-text">{{item.name}}夹着尾巴逃了</span></div>
+        <div class="broad" v-else-if="item.into">
+          <span class="broad-text">{{item.name}}闪亮登场!!!</span>
+        </div>
+        <div class="broad" v-else>
+          <span class="broad-text">{{item.name}}夹着尾巴逃了</span>
+        </div>
       </div>
       <div id="msg_end" style="height:0px; overflow:hidden"></div>
     </div>
@@ -141,11 +145,9 @@ export default {
     },
     showMes(message) {
       this.chat_list.push(message);
-      if (message.id === this.socketId) {
-        this.$nextTick(function() {
-          msg_end.scrollIntoView();
-        });
-      }
+      this.$nextTick(function() {
+        msg_end.scrollIntoView();
+      });
     },
     openUserNicknameInput() {
       this.$prompt("请输入聊天昵称", "GN在线", {
@@ -205,13 +207,13 @@ export default {
   margin: 22px 2%;
   position: relative;
 }
-.broad{
+.broad {
   text-align: center;
   font-size: 16px;
   color: #255359;
   margin: 15px 0;
 }
-.broad-text{
+.broad-text {
   display: inline-block;
   padding: 5px 5px;
   background: #cccccc;
