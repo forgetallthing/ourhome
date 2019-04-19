@@ -26,10 +26,16 @@
     <el-input class="mes-content" type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea">
     </el-input>
     <div class="mes-set">
-      <span>当前在线：{{onlineTotal}}</span>
-      <el-switch class="mes-swich" @change='connect' v-model="wsStateValue" :inactive-text='wsState' active-color="#13ce66" inactive-color="#0089A7">
-      </el-switch>
-      <el-button class="mes-send" size='small' @click="send" type="primary">send</el-button>
+      <el-row :gutter="10">
+        <el-col :xs="17" :sm="17" :md="16" :lg="16" :xl="16">
+          <span>当前在线：{{onlineTotal}}</span>
+          <el-switch class="mes-swich" @change='connect' v-model="wsStateValue" :inactive-text='wsState' active-color="#13ce66" inactive-color="#0089A7">
+          </el-switch>
+        </el-col>
+        <el-col :xs="7" :sm="7" :md="8" :lg="8" :xl="8">
+          <el-button class="mes-send" size='small' @click="send" type="primary">send</el-button>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
@@ -196,10 +202,12 @@ export default {
 }
 .mes-send {
   float: right;
-  width: 150px;
+  width: 80%;
   height: 40px;
   background-color: #0089a7;
   font-size: 18px;
+  text-align: center;
+  padding: 0 0 !important; 
 }
 .mes-contain {
   width: 96%;
