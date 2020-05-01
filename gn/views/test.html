@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="./static/tables/css/jquery.dataTables.min.css" />
+	<link rel="stylesheet" type="text/css" href="./static/tables/css/bootstrap.min.css" />
+
+	<style type="text/css">
+		.table-show {
+			width: 1200px;
+			margin-top: 100px;
+			margin-left: 100px;
+			border: #CCCCCC 1px solid;
+			padding: 20px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="" class="table-show">
+		<table cellpadding="0" cellspacing="0" border="0" class=" display table-striped table-bordered" id="example">
+		</table>
+	</div>
+	<script src="./static/tables/js/jquery-2.1.0.js"></script>
+	<script src="./static/tables/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		(function () {
+			/*
+				相关配置:
+				url:服务器数据源接口地址
+				showCol:显示的列
+				columns:列头和相关设置
+			*/
+			var config = {
+				url: "http://xxx.xxx.xxx/data.php",
+				showCol: ["devId", "label", "setValue", "regValue"],
+				columns: [{
+						"title": "devId"
+					},
+					{
+						"title": "label",
+						"searchable": false,
+					},
+					{
+						"title": "setValue",
+						"searchable": false,
+					},
+					{
+						"title": "regValue",
+						"searchable": false,
+					},
+				]
+			}
+
+			// //服务器数据源
+			// getData()
+
+			//模拟数据源
+			getSimulationData()
+
+			function getData() {
+				$.ajax({
+					type: "get",
+					url: config.url,
+					data: {
+						name: "fdipzone",
+						gender: "male"
+					},
+					success: function (data) {
+						console.log(data);
+						var dataSet = turnData(data);
+						showTable(dataSet);
+					},
+					error: function (e) {
+						alert("服务器错误，请联系我们")
+					}
+				});
+			}
+
+			//使用测试数据
+			function getSimulationData() {
+				var data = [{
+						'uuid': '1',
+						'devId': 'devId1',
+						'recId': '3',
+						'settingId': '4',
+						'label': '5',
+						'type': '6',
+						'setValue': '7',
+						'regValue': '8',
+						'time': '9'
+					},
+					{
+						'uuid': 'qwe',
+						'devId': 'devId2',
+						'recId': 'qe',
+						'settingId': 'qwe',
+						'label': 'qee',
+						'type': 'e',
+						'setValue': '1221.33',
+						'regValue': '1111',
+						'time': 't'
+					},
+					{
+						'uuid': 'qwe',
+						'devId': 'd3',
+						'recId': 'qe',
+						'settingId': 'qwe',
+						'label': 'qee',
+						'type': 'e',
+						'setValue': '2323',
+						'regValue': '3443',
+						'time': 't'
+					}
+				];
+				var dataSet = turnData(data);
+				showTable(dataSet)
+			}
+
+			//转换数据
+			function turnData(data) {
+				var result = [];
+				for (var i = 0; i < data.length; i++) {
+					result[i] = [];
+					for (var j = 0; j < config.showCol.length; j++) {
+						result[i].push(data[i][config.showCol[j]])
+					}
+				}
+				return result;
+			}
+
+			//绘制表格
+			function showTable(dataSet) {
+				$('#example').DataTable({
+					// "data": dataSet,
+					ajax: {
+						url: "./test1"
+					},
+					serverSide: true,
+					destroy: true,
+					"pagingType": "full_numbers",
+					"columns": config.columns,
+					"paging": true,
+					"ordering": false,
+					"info": false,
+					"language": {
+						"search": "快速检索devId:",
+						"processing": "数据加载中……",
+						"lengthMenu": "每页显示 _MENU_ 条",
+						"sInfo": "从 _START_ 到 _END_ 条，显示 _TOTAL_ 条记录",
+						"zeroRecords": "没有记录",
+						"infoEmpty": "暂无记录",
+						"infoFiltered": "(一共有 _MAX_  条记录)",
+						"paginate": {
+							"first": "首页",
+							"previous": " 上一页 ",
+							"next": " 下一页 ",
+							"last": " 末页 "
+						}
+					}
+				});
+			}
+		})()
+	</script>
+
+</body>
+
+</html>

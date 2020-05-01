@@ -28,12 +28,19 @@ function userLogin(userId, p, callback) {
     });
 }
 
-function socket() {
-    
+function test(userId, p, callback) {
+    co(function* () {
+       
+        callback(0, {
+            OK: "mgtLevel"
+        });
+    }).catch(function (err) {
+        callback(err);
+    });
 }
-socket()
 
 module.exports = {
     userLogin,
     getKey,
+    test,
 };

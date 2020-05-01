@@ -7,7 +7,12 @@ const routerMap = {
         // routerFile: require("./ncc"),`````````````
         manager: require("../contribution/userManager"),
         router: {
-            userLogin: { method: "post" },
+            test: {
+                method: "get"
+            },
+            userLogin: {
+                method: "post"
+            },
             // removeTotalCheck: { arg: ["userId", "userLogin", "p"] },
             getKey: {
                 method: "post",
@@ -19,7 +24,8 @@ const routerMap = {
                         res.send(msg.buildSuccessMsg(r));
                     }
                 }
-            }
+            },
+
         }
     },
 };
@@ -56,7 +62,9 @@ for (let k in routerMap) {
             (rn => {
                 r[rn.method]("/" + rn.path, function (req, res) {
                     if (!req.session) {
-                        res.send(msg.buildErrMsg({ message: "您没有登录~" }));
+                        res.send(msg.buildErrMsg({
+                            message: "您没有登录~"
+                        }));
                         return;
                     }
                     let argVal = {
@@ -82,7 +90,10 @@ for (let k in routerMap) {
             })(rn);
         }
     })(routerSetting, router);
-    routers.push({ path: k, r: router });
+    routers.push({
+        path: k,
+        r: router
+    });
 }
 
 module.exports = routers;
